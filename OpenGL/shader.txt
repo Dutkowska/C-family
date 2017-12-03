@@ -1,0 +1,262 @@
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GL/glu.h>
+#include "stdafx.h"
+#include <stdio.h>
+#include <iostream>
+#include <windows.h>
+#include <gl\freeglut.h>
+#include <gl\glut.h>
+#include <gl\freeglut_ext.h>
+#include <gl\gl.h>
+#include <math.h>
+
+int	rot = 0;
+int deltax;
+int deltay;
+int deltaz;
+int x1;
+int a1;
+int z1;
+float alpha;
+double rot_x;
+double rot_y;
+double nx;
+double ny;
+double nz;
+GLfloat matrix2[16];
+GLuint vao;
+GLuint vbo;
+GLint loc_color_r;
+
+
+void funkcjaRenderujaca(){
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glutSwapBuffers();
+}
+
+/*void funkcjaklawiatury(unsigned	char key, int x, int y){
+	printf("Key %c, pos(X: %d, Y: %d)\n", key, x, y);
+	switch (key){
+	case 27:
+		exit(0);
+		break;
+	case 'e': break;
+
+	case 'x': glRotatef(20, 1, 0, 0); glutPostRedisplay();
+	case 'y':glRotatef(20, 0, 1, 0); glutPostRedisplay();
+	case 'z':glRotatef(20, 0, 0, 1); glutPostRedisplay();
+
+
+	}
+};*/
+
+/*void myszka_macierz(int x, int y){
+
+		{
+
+			rot_x = a1 - y;
+			rot_y = x1 - x;
+			double poz = rot_x*rot_x + rot_y*rot_y;
+			GLint v[4];
+			glGetIntegerv(GL_VIEWPORT, v);
+			alpha = 100 * sqrt(poz) / v[3];
+
+			GLfloat matrix[16];
+			glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+
+			GLfloat matrix2[16];
+			gluInvertMatrix(matrix, matrix2);
+
+
+
+			nx = matrix2[0] * rot_x + matrix2[4] * rot_y;
+			ny = matrix2[1] * rot_x + matrix2[5] * rot_y;
+			nz = matrix2[2] * rot_x + matrix2[6] * rot_y;
+			printf("%f %f %f %f \n", alpha, nx, ny, nz);
+
+
+			glutPostRedisplay();
+
+		}
+
+
+
+}*/
+
+
+/*void funkcjamyszy(int button, int state,
+	int x, int y){
+
+
+	x1 = x;
+	a1 = y;
+
+
+
+};*/
+
+
+int _tmain(int argc, char* args[])
+{
+	glEnable(GL_DEPTH_TEST);
+
+	glutInit(&argc, args);
+	glutInitContextVersion(2, 1);
+	glutInitDisplayMode(GLUT_DOUBLE);
+	glutInitWindowSize(300, 300);
+	glutCreateWindow("OpenGL");
+
+//	Inicjalizacja biblioteki
+		glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if
+		(err != GLEW_OK)
+	{
+		printf(
+			"Err %d"
+			, err);
+		return 1;
+	}
+
+
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	static const
+		GLfloat triangle_vertex[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+	};
+	glBufferData(GL_ARRAY_BUFFER,
+		sizeof
+		(triangle_vertex), triangle_vertex, GL_STATIC_DRAW);
+
+	const
+		GLchar* simply_vertex_shader =
+		"#version 150\n"
+		"in vec3 position;"
+		"void main()"
+		"{"
+		"gl_Position = 	vec4(position, 1); "
+		"}";
+	const GLchar* simply_fragment_shader =
+		"#version 150 core\n"
+		"out vec4 out_color;"
+		"uniform float r_color;"    //<<<<<<<<<<<<<<<<<
+		"void main()"
+		"{"
+		"    out_color = vec4(r_color,0.0,0.0, 1.0);"
+		"}";
+
+	// Utwórz i skompiluja vertex shader
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &simply_vertex_shader, NULL);
+	glCompileShader(vertexShader);
+	// Utwórz i skompiluja	fragment shader
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &simply_fragment_shader, NULL);
+	glCompileShader(fragmentShader);
+
+	// podlinkowanie shaderów do programu shaderów (utworzonego)
+		GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	// Dobindowanie zmiennej out_color dla shadera
+	glBindFragDataLocation(shaderProgram, 0,
+		"out_color"
+		);
+	glLinkProgram(shaderProgram);
+	// linkowanie
+	glUseProgram(shaderProgram);
+	//  uzycie
+
+	//pobranie umiejscowienia atrybutu "position" w naszym programie
+	GLint posAttrib = glGetAttribLocation(shaderProgram,
+		"position"
+		);
+	//odblokowanie atrybutów
+	glEnableVertexAttribArray(posAttrib);
+	//ustawienie atrybutów
+	glVertexAttribPointer(
+		posAttrib,
+		//pozycja
+		3,
+		//rozmiar elementów dla ka¿dego wierzcho³ka
+		GL_FLOAT,
+		//typ
+		GL_FALSE,
+		//czy znormalizowany
+		0,
+		//"stride" w przypadku gdy zero oznacza, ¿e mamy ci¹g³¹ upakowan¹ tablicê
+		0
+		//wska¿nik do pierwszego atrybutu, jeœli zero to od pocz¹tku (domyœlnie)
+		);
+
+	loc_color_r = glGetUniformLocation(shaderProgram,
+		"r_color"
+		);
+
+	glMatrixMode(
+		GL_PROJECTION
+		);
+	glLoadIdentity();
+
+
+	glMatrixMode(
+		GL_MODELVIEW
+		);
+	void scrollEvent(int id,int	pos){
+		printf("Event %d  %d \r\n", id, pos);
+		switch(id){
+			case 22:
+					//numer jaki nadalismy paskowi
+					rot = pos;
+					//zwieksz kat obrotu, aktualna pozycja scrol bara
+					if(rot > 360)
+					{
+						rot = 0;
+					}
+					break;
+					case 1:
+							red = (GLfloat)pos / 100.0;
+							if(loc_color_r != -1)
+							{
+								glUniform1f(
+r_r, red);
+							}
+							break;
+					case 2:
+									green = (GLfloat)pos / 100.0;
+									break;
+					case 3:
+											blue = (GLfloat)pos / 100.0;
+											break;
+		}
+
+
+
+
+//	glutKeyboardFunc(funkcjaklawiatury);
+//	glutMouseFunc(funkcjamyszy);
+//	glutMotionFunc(myszka_macierz);
+	glutDisplayFunc(funkcjaRenderujaca);
+
+
+
+	glutMainLoop();
+	glDeleteProgram(shaderProgram);
+	glDeleteShader(fragmentShader);
+	glDeleteShader(vertexShader);
+	glDeleteBuffers(1, &vbo);
+	glDeleteVertexArrays(1, &vao);
+	return 0;
+}
