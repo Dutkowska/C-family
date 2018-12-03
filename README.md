@@ -1,2 +1,1 @@
-# C-sharp
-codes in c#, including OpenGL
+codes in c++ (as well as a few in c#)
