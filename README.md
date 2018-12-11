@@ -1,1 +1,1 @@
-codes in c++ (as well as a few in c#)
+codes in c++ (as well as a few in c# and C)
