@@ -1,11 +1,9 @@
 #include <iostream>
 using namespace std;
-int main()
+unsigned int fac_it(unsigned int a)
 {
-    unsigned int a;
     unsigned long long b=1;
-    cin >> a;
-    if(a==0) cout << "1";
+    if(a==0) return 1;
     else
     {
         while(a>0)
@@ -13,7 +11,13 @@ int main()
             b*=a;
             a--;
         }
-        cout << b;
+        return b;
     }
+}
+int main()
+{
+    unsigned int a;
+    cin >> a;
+    cout << fac_it(a);
     return 0;
 }
