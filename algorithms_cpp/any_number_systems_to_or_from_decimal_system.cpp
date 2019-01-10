@@ -28,6 +28,17 @@ void chose(string c, int n, int system)
     }
     else cout << "Wrong letter";
 }
+bool check_num(int n, int system)
+{
+    int k;
+    while(n>0)
+    {
+        k=n%10;
+        if (k>=system) return false;
+        else n=n/10;
+        return true;
+    }
+}
 int main()
 {
     int n, system;
@@ -38,6 +49,7 @@ int main()
     cin >> way;
     cout << "Enter your number: ";
     cin >> n;
-    chose(way, n, system);
+    if (check_num(n, system)==true) chose(way, n, system);
+    else cout << "Wrong number in this system (out of range). ";
     return 0;
 }
