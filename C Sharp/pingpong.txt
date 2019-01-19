@@ -28,7 +28,7 @@ namespace ping_pong
         {
             podstawa.Left = Cursor.Position.X - (podstawa.Width / 2); // srodek podstawy poczatkiem
             
-            //poruszamy pi³k¹: 
+            //poruszamy piÂ³kÂ¹: 
             ball.Left += speed;
             ball.Top += opad;
 
@@ -58,7 +58,7 @@ namespace ping_pong
             }
 
 
-            // gdy pi³ka wywala na dole: 
+            // gdy piÂ³ka wywala na dole: 
             if (ball.Bottom >= playground.Bottom)
             {
                 timer1.Enabled = false;
@@ -67,7 +67,7 @@ namespace ping_pong
         }
 
 
-        //nacisniêcie klawisza
+        //nacisniÃªcie klawisza
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) { this.Close(); }
