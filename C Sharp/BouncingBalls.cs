@@ -18,15 +18,15 @@ namespace BouncingBalls // koncowe!!!
             int ilosc_kulek = 3;
             Restart(ilosc_kulek);
 
-            //!!!! usuniêcie b³yskania!!!!!!
+            //!!!! usuniÄ™cie bÅ‚yskania!!!!!!
             DoubleBuffered = true;
-            // ustawienie kwadratu dostêpnego dla pi³ek - skrót
+            // ustawienie kwadratu dostÄ™pnego dla piÅ‚ek - skrÃ³t
             Box = ClientRectangle;
 
             timer.Interval = 30;   // ustawiam timer
             timer.Start();        
 
-            // ?? czegoœ brakuje
+            // ?? czegoÅ› brakuje
         }
 
         kulka[] kulki;
@@ -37,14 +37,14 @@ namespace BouncingBalls // koncowe!!!
 
 
 
-        // tworzê funkcjê wystartowania kulek
+        // tworzÄ™ funkcjÄ™ wystartowania kulek
         public void Restart(int ilosc_kulek)
         {
             // Point(x,y)
 
             Point start = new Point(1,1);
 
-            // tablice - by nie zawalaæ - SPRAWDZIC!! - odwo³anie do klasy Kulka
+            // tablice - by nie zawalaÄ‡ - SPRAWDZIC!! - odwoÅ‚anie do klasy Kulka
             kulki = new kulka[ilosc_kulek];
             for (int i = 0; i < ilosc_kulek; i++)
                 kulki[i] = new kulka(start, new Point(random.Next(0, 5), random.Next(0, 5)), random.Next(30, 50));
@@ -94,7 +94,7 @@ namespace BouncingBalls // koncowe!!!
         {
 
             Kwa = new Rectangle(start.X, start.Y, size, size);  // sprawdzajka
-            // Eclipse nie dzia³a
+            // Eclipse nie dziaÅ‚a
             speedy = sspeedy;
             kat_lotu = random.Next(-100, 100);
         }
@@ -109,11 +109,11 @@ namespace BouncingBalls // koncowe!!!
         public void kolizja_z_inna(kulka ikulka)
         {
 
-            //haha, intersectswith - przecinanie siê :D
+            //haha, intersectswith - przecinanie siÄ™ :D
             // liczenie distant(polozenie1 - polozenie 2) < (promien1+promien2)^2 itd... 
             // (Length(dist))
 
-            //czy zderza siê z inna kulka - ikulka
+            //czy zderza siÄ™ z inna kulka - ikulka
             if (Kwa.IntersectsWith(ikulka.Kwa))
             {
                 Point dist = ikulka.Center - (Size)Center;
@@ -138,7 +138,7 @@ namespace BouncingBalls // koncowe!!!
                             PointF os_wekt = Scale(os_dystans, os_predkosc);
                             PointF wekt = Scale(bu_dystans, mnoze(bu_dystans, speedy));
 
-                        // coœ tu wywala?
+                        // coÅ› tu wywala?
 
                             PointF ikulkaos_wekt = Scale(os_dystans, os_ikulkspeed);
                             PointF ikulkawekt = Scale(bu_dystans, mnoze(bu_dystans, ikulka.speedy));
@@ -176,10 +176,10 @@ namespace BouncingBalls // koncowe!!!
 
         public void Update(Control drawingControl, Rectangle region)
         {
-            drawingControl.Invalidate(Kwa);   // by nie zostawa³y "slady"
+            drawingControl.Invalidate(Kwa);   // by nie zostawaÅ‚y "slady"
             Kwa.X = Kwa.X + speedy.X;
             Kwa.Y = Kwa.Y + speedy.Y;
-          //  Kwa.Offset(speedy); // przesuniêcie o speedy (zamiast powy¿szego? - zacina siê)
+          //  Kwa.Offset(speedy); // przesuniÄ™cie o speedy (zamiast powyÅ¼szego? - zacina siÄ™)
             
             if (Kwa.Left <= region.Left)    // lewaaa sciana - zmiana - moze byc tez jak w tym drugim
             {
