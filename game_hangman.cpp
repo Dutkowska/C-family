@@ -3,6 +3,7 @@
 #include <string.h>
 #include <cstdlib>
 #include <time.h>
+#include <algorithm>
 using namespace std;
 
 //---variables---
@@ -17,20 +18,32 @@ string try_word;
 string m1= "Try again, you still have ", m2=" chance(s). Enter 'stop' to stop.";
 
 
-void start(string word, int len)
+void start(string word, string lines[])
 {
     cout << "Write your name: " << endl;
     cin >> name;
     cout << "Hello " << name << ". Let's start a game!" << endl;
-    cout << "Your word has length: " << len << ". Try to guess its, write a letter. Enter 'stop' to stop. " << endl;
-    //cout << word; //to tests
+    cout << "Your word has length: " << word.length() << endl;
+    for(int i=0; i<word.length(); i++)
+        cout << lines[i] << " ";
+    cout << endl << "Try to guess its, write a letter. Enter 'stop' to stop. " << endl;
+    //cout << word; //to quick tests
 }
-bool checker(string ch, string word)
+bool checker(string ch, string word, string lines[], int good_count, int word_count)
 {
+    //and making _ o o _ _
     bool check=false;
     int position=word.find(ch);
     if(position!=string::npos)
+    {
         check=true;
+        if (good_count!=0 && word_count>1)
+        {
+            int new_position=word.find(ch, position+1);
+            position=new_position;
+        }
+        lines[position]=ch;
+    }
     return check;
 }
 
@@ -45,22 +58,24 @@ bool checker(string ch, string ar[], int siz)
     return false;
 }
 
-void game(string ch, int stay)
+void game(string ch, int stay, int good_count, size_t word_count, string lines[], string word)
 {
     good[g]=ch;
     g+=1;
-    if(stay==0) cout << "Good! It was your last chance." << endl;
-    else cout << "Good! " << m1 << stay << m2 << endl;
+    for(int i=0; i<word.length(); i++)
+        cout << lines[i] << " ";
+    if(stay==0) cout << endl << "Good! It was your last chance." << endl;
+    else cout << endl << "Good! " << m1 << stay << m2 << endl;
 }
 
-void ender(string word)
+void ender(string word, string lines[])
 {
     cout << "Wrong answers: " << wrong << " times." << endl;
     cout << "Correct answers: " << repeat-wrong << " times." << endl;
     cout << "Your characters: " << endl;
-    for(int i=0; i<turn; i++)
-        cout << good[i] << " ";
-    cout << "Try to write word: " << endl;
+    for(int i=0; i<word.length(); i++)
+        cout << lines[i] << " ";
+    cout << endl << "Try to write word: " << endl;
     cin >> try_word;
     if(try_word==word) cout << "Good!" << endl;
     else cout << "Wrong, right word: " << word << endl;
@@ -73,54 +88,57 @@ int main()
     int randindex=rand()%(repeat+1);
     string word=words[randindex];
     int len=word.length();
+    string lines[len]; // for sth like: _ _ a _ m
+    for(int i=0; i<len; i++)
+        lines[i]="_";
 
-    start(word, len);
+    start(word, lines);
     while (turn<repeat)
     {
         int stay=repeat-turn-1;
         string ch;
         cin >> ch;
+        int good_count=count(good, good+repeat, ch); //for good_count!=word_count ==> 'loop' and second 'o'
+        size_t word_count=count(word.begin(), word.end(), ch[0]);
+
         if(ch=="stop") break;
         else if (ch.length()>1)
         {
             turn-=1;
-            cout << "Write only 1 character!" << m1 << stay+1 << m2 << endl;
+            for(int i=0; i<word.length(); i++)
+                cout << lines[i] << " ";
+            cout << endl << "Write only 1 character!" << m1 << stay+1 << m2 << endl;
         }
-        // else if char in write and leng...
-        else if (checker(ch, write, turn)==true) //and what if we have 'loop' and second 'o'?
+        else if (checker(ch, write, turn)==true && good_count==word_count) //if we have 'loop' and third 'o'
         {
             turn-=1;
-            cout << "You have already written that character! " << m1 << stay+1 << m2 << endl;
+            for(int i=0; i<word.length(); i++)
+                cout << lines[i] << " ";
+            cout << endl << "You have already written that character! " << m1 << stay+1 << m2 << endl;
         }
         else
         {
-            bool check = checker(ch, word);
+            bool check = checker(ch, word, lines, good_count, word_count);
             if (check==false)
             {
                 wrong+=1;
+                for(int i=0; i<word.length(); i++)
+                    cout << lines[i] << " ";
                 if(stay==0)
                 {
-                    cout << "It was your last chance." << endl;
+                    cout << endl << "It was your last chance." << endl;
                     break;
                 }
-                cout << "Wrong. " << m1 << stay << m2 << endl;
+                cout << endl << "Wrong. " << m1 << stay << m2 << endl;
             }
             else
-                game(ch, stay);
+                game(ch, stay, good_count, word_count, lines, word);
         }
         write[turn]=ch;
         turn+=1;
         cin.clear();
         cin.ignore(100, '\n');
     }
-    ender(word);
+    ender(word, lines);
     return 0;
 }
-
-/*
-Things to do:
-- what with 'loop' and second 'o':
-    + during input
-    + write to good with checker f
-- make: h_n_a during every loop and in endler()
-*/
