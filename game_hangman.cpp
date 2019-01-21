@@ -85,7 +85,7 @@ int main()
 {
     //--- variables ---
     srand(time(NULL));
-    int randindex=rand()%(repeat+1);
+    int randindex=rand()%9;
     string word=words[randindex];
     int len=word.length();
     string lines[len]; // for sth like: _ _ a _ m
