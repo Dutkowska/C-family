@@ -2,11 +2,11 @@
 using namespace std;
 
 
-void add_mat(int A[][20], int n)
+void add_mat(int A[][20], int n, int m)
 {
     cout << "Enter datas: " << endl;
     for(int i=0; i<n; i++)
-        for(int j=0; j<n; j++) cin >> A[i][j];
+        for(int j=0; j<m; j++) cin >> A[i][j];
 }
 string identity_mat(int A[][20], int n)
 {
@@ -29,6 +29,45 @@ string zero_mat(int A[][20], int n)
             if(A[i][j]!=0) return "zero matrix: false";
     }
     return "zero matrix: true";
+}
+
+string diagonal_mat(int A[][20], int n)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+            if (i!=j && A[i][j]!=0) return "diagonal matrix: false";
+    }
+    return "diagonal matrix: true";
+}
+
+string sparse_mat(int A[][20], int n) // most of the elements are zero
+{
+    int ele=int(n*n*0.5);
+    int counter=0;
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+            if(A[i][j]==0) counter+=1;
+    }
+    if(counter>ele) return "sparse matrix: true";
+    return "sparse matrix: false";
+}
+/*
+Triangular matrix:
+right: //A[i][j]: n n n // _ n n // _ _ n   => _ _ _ // 0 _ _ // 0 0 _
+left: //A[i][j]: n _ _ // n n _ // n n n   => _ 0 0 // _ _ 0 // _ _ _
+*/
+string left_triangular_mat(int A[][20], int n)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=i+2; j<n; j++)
+        {
+            if(A[i][j]!=0) return "left triangular matrix: false";
+        }
+    }
+    return "left triangular matrix: true";
 }
 
 void multiply_mat(int A[][20], int B[][20], int C[][20], int n, int m, int k)
@@ -107,12 +146,17 @@ int main()
     int A[20][20], n, de;
     cout << "Enter the number of columns of a matrix n x n: " << endl;
     cin >> n;
-    add_mat(A,n);
+    add_mat(A, n, n);
+    cout << "square matrix: true" << endl;
     cout << identity_mat(A, n) << endl;
     cout << zero_mat(A, n) << endl;
+    cout << diagonal_mat(A, n) << endl;
+    cout << sparse_mat(A, n) << endl;
     cout << nilpotent_mat(A, n) << endl;
     cout << symmetric_mat(A, n) << endl;
     cout << skew_symmetric_mat(A, n) << endl;
     cout << orthogonal_mat(A, n) << endl;
+    cout << left_triangular_mat(A, n) << endl;
+
     return 0;
 }
